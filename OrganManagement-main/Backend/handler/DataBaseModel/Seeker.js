@@ -6,6 +6,10 @@ const SeekerSchema = new mongoose.Schema({
         allowNull: false,
         foreignKey: true,
     },
+    fullName: {
+        type: String,
+        allowNull: false,
+    },
     bloodgroup: {
         type: String,
         allowNull: false,
@@ -51,6 +55,17 @@ const SeekerSchema = new mongoose.Schema({
         type: String,
         allowNull: true,
         required: true,
+    },
+    status:{
+        type:String,
+        default:'pending',
+        allowNull:false,
+        required:true
+    },
+    matchid:{
+        type:String,
+        allowNull:true,
+        default:""
     },
     date: {
         type: Date,

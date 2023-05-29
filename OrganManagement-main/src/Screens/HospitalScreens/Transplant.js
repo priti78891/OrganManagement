@@ -14,21 +14,21 @@ export function Transplant() {
     const [isOpen, setisOpen] = useState(false);
     const [datafetched, setdatafetched] = useState(false);
     const [user, setUser] = useState({});
-    const [donardata, setDonarData] = useState([]);
+    const [donardata, setDonarData] = useState();
     useEffect(async () => {
         require("../../styles/bootstrap.min.css");
         require("../../styles/tooplate.css");
-        // debugger;
+        debugger;
         var cnt = 0;
 
         const accounts = await web3.eth.getAccounts();
         const tmpUser = await AuthService.getCurrentUser()
         setUser(tmpUser);
-        console.log(tmpUser)
-        console.log(accounts[0]);
+        console.log("temp"+tmpUser)
+        console.log("account"+accounts[0]);
         if (accounts[0] && tmpUser) {
             // const len=await instance.methods.getDonorcount().call();
-            var addData = [];
+            //var addData = [];
             // console.log(len);
             // for(var i=0; i<len; i++)
             // {
@@ -52,28 +52,44 @@ export function Transplant() {
             //     }
             // }
 
-            const len1 = await instance.methods.getrecipientcount().call();
-            console.log(len1);
-            for (var i = 0; i < len1; i++) {
-                const donorid = await instance.methods.recipientarr(i).call();
-                const DonarInfo = await instance.methods.Recipients(donorid).call();
-                console.log(DonarInfo);
-                if (DonarInfo['hospitalid'] === accounts[0]) {
-                    if (DonarInfo['added'] == true) {
-                        Axios.get("http://localhost:4000/getrequest?hid=" + DonarInfo['hospitalid'] + "&userrole=seeker")
+           // const len1 = await instance.methods.getrecipientcount().call();
+            //console.log(len1);
+           // for (var i = 0; i < len1; i++) {
+            //var len1 =0;
+            // Axios.get("http://localhost:4000/getrequest?hid=" + accounts[0] + "&userrole=Donar")
+            // .then(result=>{
+            //     len1=result.data.length;
+
+            // });
+                // const donorid = await instance.methods.recipientarr(i).call();
+                // const DonarInfo = await instance.methods.Recipients(donorid).call();
+                // console.log("donor id: "+donorid)
+                // console.log(DonarInfo);
+                // console.log("accounts:"+accounts)
+                // if (DonarInfo['hospitalid'] === accounts[0]) {
+                //     console.log("account id matched")
+                //     if (DonarInfo['added'] == true) {
+
+                        await Axios.get("http://localhost:4000/getrequest?hid=" + accounts[0] + "&userrole=Seeker",{
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }})
                             .then(result => {
-                                addData.push(result.data[0])
-                                setData(addData);
+                                console.log(result.data)
+                                //addData.push(result.data[0])
+                                setData(result.data);
                                 isdone = false;
-                                cnt++;
+                                cnt=result.data.length;
                                 // console.log(addData);
                                 // setdatafetched(true);
-                            });
+                            }).catch(err=>{
+                                console.log(err);
+                            })
                         // addData.push(DonarInfo);
                         // setData(addData);
-                    }
-                }
-            }
+                   // }
+                //}
+           // }
         }
         // Axios
         //     .get("http://localhost:2345/Api/employee/DemoData")
@@ -88,23 +104,60 @@ export function Transplant() {
 
     }, []);
 
-    function logout() {
-        AuthService.logout();
-    }
+    // function logout() {
+    //     AuthService.logout();
+    // }
 
-    async function toggleModal(metaid,id) {
-        setdatafetched(false);
-
-        var abs = await instance.methods.transplantmatch(metaid).call();
-        Axios.get("http://localhost:4000/getrequest?hid=" + abs + "&userrole=Donar")
-            .then(result => {
+    async function toggleModal(metaid,id,matchid,isclosing) {
+        if(matchid)
+        {
+            setdatafetched(false);
+        const accounts = await web3.eth.getAccounts();
+        var a=null;
+            await Axios.get("http://localhost:4000/getrequest?hid=" + accounts[0] + "&userrole=Donar"+"&metaid="+matchid)
+            .then(async result => {
                 // .push(result.data[0])
-                setDonarData(result.data[0]);
+                console.log(result.data);
+                    await setDonarData(result.data[0]);
+                    a=result.data[0]
+        
                 setdatafetched(true);
 
             });
-        index = id;
-        setisOpen(!isOpen);
+        
+        }else{
+        if(metaid!=null){
+        setdatafetched(false);
+        const accounts = await web3.eth.getAccounts();
+        var abs = await instance.methods.transplantmatch(metaid).call();
+        console.log(abs);
+        var a=null;
+        if(abs==="0x0000000000000000000000000000000000000000")
+           { alert("No Match Found")
+            window.location.href='/Transplant'
+        }
+        else{
+            console.log("http://localhost:4000/getrequest?hid=" + accounts[0] + "&userrole=Donar"+"&metaid="+abs);
+        await Axios.get("http://localhost:4000/getrequest?hid=" + accounts[0] + "&userrole=Donar"+"&metaid="+abs)
+            .then(async result => {
+                // .push(result.data[0])
+                console.log(result.data);
+                if(result.data[0].status==='verified'){
+                    await setDonarData(result.data[0]);
+                    a=result.data[0]
+            }
+                else{
+                    alert("No Match Found")
+                }
+                setdatafetched(true);
+
+            });
+        }
+        }}
+        if(id!=null)
+            index = id;
+        if(a!=null || isclosing)
+            setisOpen(!isOpen);
     }
 
     if (!datafetched) {
@@ -134,6 +187,7 @@ export function Transplant() {
                                                 <th scope="col">sr no</th>
                                                 <th scope="col">Seeker Name</th>
                                                 <th scope="col" className="text-center">Organ</th>
+                                                <th scope="col" className="text-center">Status</th>
                                                 <th scope="col">Find Donar</th>
                                             </tr>
                                         </thead>
@@ -144,10 +198,17 @@ export function Transplant() {
                                                     <th scope="row">{index}.</th>
                                                     <td>{item.fullName}</td>
                                                     <td>{item.orgname}</td>
+                                                    <td>{item.status}</td>
                                                     <td>
-                                                        <Button variant="info" onClick={() => toggleModal(item.metamaskid,index)} >
-                                                            <span style='font-size:100px;'>&#10144;</span>
-                                                        </Button>
+                                                        {item.status==='matched' ?
+                                                        <Button variant="info" onClick={() => toggleModal(item.metamaskid,index,item.matchid,false)} >
+                                                        Donor Details
+                                                    </Button> :
+                                                        <Button variant="info" onClick={() => toggleModal(item.metamaskid,index,item.matchid,false)} >
+                                                            <span>&#10144;</span>
+                                                        </Button> 
+                                    
+                                                        }
                                                     </td>
                                                 </tr>
                                             })}
@@ -160,19 +221,19 @@ export function Transplant() {
                         </div>
                     </div>
                 </div>
-                <Modal show={isOpen}
-                    onClose={() => toggleModal({ index })} metamaskid={donardata[index] ? donardata[index].metamaskid : ''}>
+                <Modal show={isOpen} donorid={donardata?donardata.metamaskid:''} matched={data[index]? (data[index].matchid===""?"false":"true"):''}
+                    onClose={() => toggleModal(null,null,null,true)} metamaskid={data[index] ? data[index].metamaskid : ''}>
                     <Table className="table">
                         <tbody>
 
                             <tr>
-                                <th>Hospital Name </th><td> {donardata[index] ? donardata[index].fullName : ''}</td>
+                                <th>Hospital Name </th><td> {donardata ? donardata.fullName : ''}</td>
                             </tr>
                             <tr>
-                                <th>Email Id  </th><td> {donardata[index] ? donardata[index].email : ''}</td>
+                                <th>Email Id  </th><td> {donardata ? donardata.email : ''}</td>
                             </tr>
                             <tr>
-                                <th>Mobile No  </th><td> {donardata[index] ? donardata[index].mobileno : ''}</td>
+                                <th>Mobile No  </th><td> {donardata ? donardata.mobileno : ''}</td>
                             </tr>
                             <tr>
                                 <th>Blood Group </th><td> {data[index] ? data[index].bloodgroup : ''}</td>
@@ -181,13 +242,13 @@ export function Transplant() {
                                 <th>Organ Name </th><td> {data[index] ? data[index].orgname : ''}</td>
                             </tr>
                             <tr>
-                                <th>State  </th><td> {donardata[index] ? donardata[index].state : ''}</td>
+                                <th>State  </th><td> {donardata ? donardata.state : ''}</td>
                             </tr>
                             <tr>
-                                <th>District  </th><td> {donardata[index] ? donardata[index].district : ''}</td>
+                                <th>District  </th><td> {donardata ? donardata.district : ''}</td>
                             </tr>
                             <tr>
-                                <th>City  </th><td> {donardata[index] ? donardata[index].city : ''}</td>
+                                <th>City  </th><td> {donardata ? donardata.city : ''}</td>
                             </tr>
                         </tbody>
                     </Table>
@@ -198,4 +259,4 @@ export function Transplant() {
         );
     }
 }
-// }
+//}

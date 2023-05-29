@@ -9,6 +9,7 @@ class AuthService {
                 if (!res.data.message) {
                     if (res.data.accessToken) {
                         console.log(res.data);
+                        // val=JSON.stringify(res.data);
                         localStorage.setItem("user", JSON.stringify(res.data));
                         console.log(JSON.parse(localStorage.getItem('user')));
                     }

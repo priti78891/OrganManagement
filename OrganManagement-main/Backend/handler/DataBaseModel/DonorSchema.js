@@ -56,6 +56,17 @@ const DonorSchema = new mongoose.Schema({
         allowNull: true,
         required: true,
     },
+    status:{
+        type:String,
+        default:'pending',
+        allowNull:false,
+        required:true
+    },
+    matchid:{
+        type:String,
+        allowNull:true,
+        default:""
+    },
     date: {
         type: Date,
         default: Date.now

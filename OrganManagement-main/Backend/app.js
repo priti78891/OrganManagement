@@ -40,6 +40,7 @@ const getrequest = require('./routes/GetRequests/controller');
 const verifyhospital = require('./routes/verifyhospital/controller')
 const addseeker = require('./routes/AddSeeker/controller');
 const getDetails = require('./routes/GetUserDetails/controller');
+const updatedStatus=require('./routes/getStatus/controller')
 
 app.use('/hr', HospitalRegistration);
 app.use('/ur', UserRegistration);
@@ -50,4 +51,5 @@ app.use('/getrequest', getrequest);
 app.use('/getHospital',getHospital);
 app.use('/verifyhospital',verifyhospital);
 app.use('/getDetails',getDetails);
+app.use('/changeStatus',updatedStatus);
 app.listen(4000, () => console.log("Server is up and running"));

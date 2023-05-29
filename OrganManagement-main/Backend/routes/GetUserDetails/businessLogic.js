@@ -1,6 +1,7 @@
 const MicroServiceResponse = require('../../handler/ResponseModels/MicroServiceResponse');
 var getDonar = require('../../handler/DataBaseModel/DonorSchema')
 var getSeeker = require('../../handler/DataBaseModel/Seeker')
+var getUser= require('../../handler/DataBaseModel/UserSchema')
 
 // const mongodbutil = require('../../config/database');
 
@@ -20,8 +21,7 @@ const getUserDetails = async function (req, res) {
                         .catch(err => {
                             res.status(203).send({ message: err });
                         })
-                } else {
-                    if (req.query.role === 'Seeker') {
+                } else if (req.query.role === 'Seeker') {
                         getSeeker.find({ uid: req.query.id })
                             .then(data => {
                                 res.status(200).send(data);
@@ -29,10 +29,22 @@ const getUserDetails = async function (req, res) {
                             .catch(err => {
                                 res.status(203).send({ message: err });
                             })
-                    } else{
+                    }else{
+                        if(req.query.role=="")
+                        {
+                            getUser.find({ uid: req.query.id })
+                            .then(data => {
+                                res.status(200).send(data);
+                            })
+                            .catch(err => {
+                                res.status(203).send({ message: err });
+                            })
+                        }
+                     else{
                         res.status(500).send({ message: "User Not found" });
                     }
                 }
+                
             }  else {
                 if (req.query.role === 'Donar') {
                     getDonar.find({})

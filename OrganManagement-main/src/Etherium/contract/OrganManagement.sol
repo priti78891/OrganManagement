@@ -150,7 +150,7 @@ contract OrganChain {
     }
     
     function addHospital(address hospitalId) 
-    public payable restrictedadmin
+    public payable
     {
         hospital[hospitalId].added=true;
     }
@@ -165,7 +165,8 @@ contract OrganChain {
     function creatRequestRecipient(
         address hospitalid,
         string memory organ,
-        string memory bloodgroup) public {
+        string memory bloodgroup)
+         public {
             Recipients[msg.sender] = recipient(msg.sender,hospitalid,
                                                 organ,bloodgroup,false,true,false);
             recipientarr.push(msg.sender);

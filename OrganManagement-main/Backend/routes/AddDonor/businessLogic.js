@@ -19,7 +19,7 @@ const addonor = async function (req, res) {
                 city: req.body.city,
                 state: req.body.state,
                 district: req.body.district,
-                // selectedFile: req.body.selectedFile,
+               // selectedFile: req.body.selectedFile,
                 hid: req.body.hid,
                 metamaskid: req.body.metamaskid,
             });
@@ -42,7 +42,6 @@ const addonor = async function (req, res) {
                                 .catch(err => {
                                     res.status(203).send({ message: err });
                                 })
-                            res.status(200).json(data)
                         }).catch(err => {
                             res.status(203).send({ message: "Your Data has been Added but request failed to sent contact to admin" })
                         })

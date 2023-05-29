@@ -28,42 +28,45 @@ export function DashBoard() {
         console.log(tmpUser)
         console.log(accounts[0]);
         if(accounts[0] && tmpUser){
-            const len=await instance.methods.getDonorcount().call();
-            var addData = [];
-            console.log(len);
-            for(var i=0; i<1; i++)
-            {
-                const donorid=await instance.methods.donorarr(i).call();
-                const DonarInfo =await instance.methods.Donors(donorid).call();
-                console.log(DonarInfo);
-                if(DonarInfo['hospitalid']===accounts[0]){
-                    console.log("Hello")
-                    if(DonarInfo['added']==false){
-                        console.log("http://localhost:4000/getrequest?hid="+DonarInfo['hospitalid']+"&userrole=Donar")
-                        debugger
-                        await Axios.get("http://localhost:4000/getrequest?hid="+DonarInfo['hospitalid']+"&userrole=Donar"
+            //const len=await instance.methods.getDonorcount().call();
+            //var addData = [];
+            //console.log(len);
+            //console.log("length")
+            // for(var i=0; i<len; i++)
+            // {
+                // const donorid=await instance.methods.donorarr(i).call();
+                // console.log(donorid)
+                // const DonarInfo =await instance.methods.Donors(donorid).call();
+                // console.log(DonarInfo['hospitalid']);
+                // console.log("Current account"+accounts[0]);
+                // if(DonarInfo['hospitalid']===accounts[0]){
+                //     console.log("Hello")
+                //     if(DonarInfo['added']==false){
+                        console.log("http://localhost:4000/getrequest?hid="+accounts[0]+"&userrole=Donar")
+                        
+                        await Axios.get("http://localhost:4000/getrequest?hid="+accounts[0]+"&userrole=Donar"
                         , {
                             headers: {
                                 'Content-Type': 'application/json'
                             }})
                         .then(result => {
-                            debugger
-                            addData.push(result.data[0])
-                            setData(addData);
+                            console.log(result.data);
+                            //addData.push(result.data[0])
+                            setData(result.data);
                             isdone = false;
-                            cnt=cnt+1;
-                            console.log(result);
+                            cnt=result.data.length;
+                            console.log(cnt);
                             // setdatafetched(true);
                         })
                         .catch(err=>{
-                            debugger
+                            
                             console.log(err);
                         })
                         // addData.push(DonarInfo);
                         // setData(addData);
-                    }
-                }
-            }
+                   // }
+               // }
+            //}
         }
         // Axios
         //     .get("http://localhost:2345/Api/employee/DemoData")
@@ -75,7 +78,6 @@ export function DashBoard() {
             setdatafetched(true);
         }
         setdatafetched(true);
-
     }, []);
 
     function logout() {
@@ -116,6 +118,7 @@ export function DashBoard() {
                                                 <th scope="col">Donar Name</th>
                                                 <th scope="col" className="text-center">Organ</th>
                                                 <th scope="col">Request Date</th>
+                                                <th scope="col">Status</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -127,6 +130,7 @@ export function DashBoard() {
                                                     <td>{item.fullName}</td>
                                                     <td>{item.orgname}</td>
                                                     <td>{item.date}</td>
+                                                    <td>{item.status}</td>
                                                     <td>
                                                         <Button variant="info" onClick={() => toggleModal(index)} >
                                                             Details
@@ -177,7 +181,7 @@ export function DashBoard() {
                     </div>
                 </div>
 
-                <Modal show={isOpen}
+                <Modal show={isOpen} status={data[index]?data[index].status:''}
                     onClose={() => toggleModal({ index })} metamaskid={data[index] ? data[index].metamaskid : ''}>
                     <Table className="table">
                         <tbody>

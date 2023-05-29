@@ -43,10 +43,9 @@ export function CDashboard() {
             // if (hinfo['added'] == false) {
 
             Axios
-                .get("http://localhost:4000/getDetails?id=" + tmpUser.id + "&role=Donar")//4000
+                .get("http://localhost:4000/getDetails?id=" + tmpUser.id + "&role=")//4000
                 .then(result => {
                     cnt++;
-                    console.log(result);
                     isdone = false;
                     adddata.push(result.data[0])
                     setData(adddata);
@@ -152,6 +151,7 @@ export function CDashboard() {
                                                     <th scope="col" className="text-center">Organ</th>
                                                     <th scope="col">Blood Group</th>
                                                     <th scope="col">state</th>
+                                                    <th scope="col">status</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -163,6 +163,7 @@ export function CDashboard() {
                                                         <td>{item.orgname}</td>
                                                         <td>{item.bloodgroup}</td>
                                                         <td>{item.state}</td>
+                                                        <td>{item.status}</td>
                                                     </tr>
                                                 })}
 
@@ -179,6 +180,7 @@ export function CDashboard() {
                                                     <th scope="col" className="text-center">Organ</th>
                                                     <th scope="col">Blood Group</th>
                                                     <th scope="col">state</th>
+                                                    <th scope="col">status</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -190,6 +192,7 @@ export function CDashboard() {
                                                         <td>{item.orgname}</td>
                                                         <td>{item.bloodgroup}</td>
                                                         <td>{item.state}</td>
+                                                        <td>{item.status}</td>
                                                     </tr>
                                                 })}
 
@@ -197,20 +200,17 @@ export function CDashboard() {
                                         </table>
                                         {isdone === true ? <div className="isdone">No Current Request in Inbox</div> : <div></div>}
                                     </div> : <div></div>}
-                                    {profile === true ? <div>
+                                    {/* {profile === true ? <div>
                                         <table className="table table-hover table-striped tm-table-striped-even mt-3">
                                         <thead>
                                             <tr className="tm-bg-gray">
                                                 <th scope="col">ID</th>
-                                                {/* <th scope="col">Username</th> */}
                                                 <th scope="col">Blood Group</th>
-                                                {/* <th scope="col">Recipient</th> */}
+                                                
                                                 <th scope="col">Organ</th>
                                                 <th scope="col">City</th>
                                                 <th scope="col">District</th>
                                                 <th scope="col">State</th>
-                                                {/* <th scope="col">Country</th> */}
-                                                {/* <th>Action</th> */}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -223,8 +223,6 @@ export function CDashboard() {
                                                     <td>{item.district}</td>
                                                     <td>{item.state}</td>
 
-                                                    {/* <td onClick={openDropDown} >verifyhospital</td>
-                                                    {open === true ? openList : null} */}
                                                 </tr>
                                             })}
 
@@ -232,7 +230,7 @@ export function CDashboard() {
                                     </table>
                                     {isdone === true ? <div className="isdone">No Current Request in Inbox</div> : <div></div>}
 
-                                    </div>: <div></div>}
+                                    </div>: <div></div>} */}
                                     
                                 </div>
 

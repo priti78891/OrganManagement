@@ -3,8 +3,10 @@ const Web3=require('web3');
 const OrganChain =require('./build/OrganChain.json');
 
 const provider=new HDWalletProvider(
-	'oak help sweet stay remind bulb income harbor car abstract badge corn',
-    'https://sepolia.infura.io/v3/4d8b77d13b6e4f8caa93318421404f7c'
+	'toy road dose credit night tuition busy library much square decide act',
+	'http://127.0.0.1:7545'
+	// 'oak help sweet stay remind bulb income harbor car abstract badge corn',
+    // 'https://sepolia.infura.io/v3/4d8b77d13b6e4f8caa93318421404f7c'
 );
 
 const web3=new Web3(provider);

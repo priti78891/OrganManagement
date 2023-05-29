@@ -1,5 +1,7 @@
 const MicroServiceResponse = require('../../handler/ResponseModels/MicroServiceResponse');
 var seekerreg = require('../../handler/DataBaseModel/Seeker');
+var addrequest = require('../../handler/DataBaseModel/Donarrequest');
+var UserRegistration = require('../../handler/DataBaseModel/UserSchema');
 // const mongodbutil = require('../../config/database');
 
 const addseeker = async function (req, res) {
@@ -18,7 +20,7 @@ const addseeker = async function (req, res) {
                 state: req.body.state,
                 district: req.body.district,
                 // selectedFile: req.body.selectedFile,
-                hid:req.body.hid,
+                hid: req.body.hid,
                 metamaskid: req.body.metamaskid,
             });
 
@@ -26,9 +28,24 @@ const addseeker = async function (req, res) {
                 .then(data => {
                     // microServiceResponse.data = data;
                     // resolve(microServiceResponse);
-
-                    res.status(200).json(data)
-
+                    const addreq = new addrequest({
+                        did: data._id,
+                        uid: req.body.uid,
+                        hid: req.body.hid,
+                    })
+                    addreq.save()
+                        .then(response => {
+                            UserRegistration.findOneAndUpdate({ _id: req.body.uid },{firstTime:false})
+                                .then(asdfg => {
+                                    res.status(200).json(data)
+                                })
+                                .catch(err => {
+                                    res.status(203).send({ message: err });
+                                })
+                            //res.status(200).json(data)
+                        }).catch(err => {
+                            res.status(203).send({ message: "Your Data has been Added but request failed to sent contact to admin" })
+                        })
                 })
                 .catch(err => {
                     console.log(err);
